@@ -1,21 +1,77 @@
-## Laravel PHP Framework
+## YSUpload Next Generation
 
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/version.png)](https://packagist.org/packages/laravel/framework) [![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.png)](https://packagist.org/packages/laravel/framework) [![Build Status](https://travis-ci.org/laravel/framework.png)](https://travis-ci.org/laravel/framework) [![License](https://poser.pugx.org/laravel/framework/license.png)](https://packagist.org/packages/laravel/framework)
+[![Build
+Status](https://travis-ci.org/EricTendian/ysupload-nextgen.svg?branch=master)](https://travis-ci.org/EricTendian/ysupload-nextgen)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, and caching.
+The next generation of YSUpload, built with the Laravel PHP framework.
+This application is meant to be simple, yet robust. It allows users to
+download YSFlight addons.
 
-Laravel aims to make the development process a pleasing one for the developer without sacrificing application functionality. Happy developers make the best code. To this end, we've attempted to combine the very best of what we have seen in other web frameworks, including frameworks implemented in other languages, such as Ruby on Rails, ASP.NET MVC, and Sinatra.
+## Server-side
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+Laravel is the current PHP framework supporting the server-side
+components of the website. Running the website locally will
+require a few things:
 
-## Official Documentation
+*  PHP >= 5.4
+*  [Composer](https://getcomposer.org/)
+*  PHPUnit
+*  Web server (configured to run out of the /public directory of this
+   project)
+*  MySQL server
 
-Documentation for the entire framework can be found on the [Laravel website](http://laravel.com/docs).
+After you have those components, go to the root directory of the
+repository and run:
 
-### Contributing To Laravel
+    composer install
 
-**All issues and pull requests should be filed on the [laravel/framework](http://github.com/laravel/framework) repository.**
+to install the necessary dependencies.
 
-### License
+### Setup your local environment config
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+Create a new directory for your local environment configuration,
+`/app/config/local-{first name}`
+
+This directory can include "overriding" configuration arrays for the
+core application config arrays.
+
+Your local config should contain a `database.php` configuration file at
+a minimum to connect to your local DB. **Do not update the database.php
+config of any other environment other than your own.**
+
+To configure the application to utilize your local environment, update
+`/bootstrap/start.php` wherein the detectEnvironment method contains an
+array index mapping 'local-{username}' => the hostname of your machine.
+
+
+#### Documentation
+
+Documentation for the entire framework can be found on the [Laravel
+website](http://laravel.com/docs).
+<br />[![Latest Stable
+Version](https://poser.pugx.org/laravel/framework/version.png)](https://packagist.org/packages/laravel/framework)
+[![Total
+Downloads](https://poser.pugx.org/laravel/framework/d/total.png)](https://packagist.org/packages/laravel/framework)
+[![Build
+Status](https://travis-ci.org/laravel/framework.png)](https://travis-ci.org/laravel/framework)
+[![License](https://poser.pugx.org/laravel/framework/license.png)](https://packagist.org/packages/laravel/framework)
+
+## Client-side
+
+All of the client-side code is located in the /public directory. This
+code utilizes Bower and NPM package management, and the Grunt task runner.
+Modifying the client-side code will require a few things:
+
+*  Git
+*  Ruby
+*  NodeJS
+*  NPM
+
+Move into the /public directory and run `bower update` then `npm update`
+to update all the local packages.
+
+The client-side code makes use of Bootstrap and AngularJS frameworks.
+
+## Additional info
+
+More to be added.
