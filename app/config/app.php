@@ -118,7 +118,8 @@ return array(
 		'Illuminate\Translation\TranslationServiceProvider',
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
-		'Illuminate\Workbench\WorkbenchServiceProvider',
+    'Illuminate\Workbench\WorkbenchServiceProvider',
+    'Frozennode\Administrator\AdministratorServiceProvider',
 
 	),
 
