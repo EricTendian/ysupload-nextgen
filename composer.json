@@ -5,7 +5,9 @@
 	"license": "MIT",
 	"require": {
 		"laravel/framework": "4.1.*",
-    "frozennode/administrator": "dev-master"
+    "frozennode/administrator": "dev-master",
+    "zizaco/confide": "3.2.x",
+    "laravelbook/ardent": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
