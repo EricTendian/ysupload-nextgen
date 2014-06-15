@@ -18,7 +18,7 @@ return [
   /* LARAVEL =========================================================== */
 
   // app/config/app.php
-  'app.env' => 'development',
+  'app.env' => 'testing',
   'app.debug' => true,
   'app.url' => 'http://ysupload.local',
   'app.timezone' => 'UTC', // UTC. Don't change
