@@ -13,7 +13,7 @@ composer.lock
 # Packages
 /node_modules
 /bower_components
-/public/packages
+/public/packages/*
 
 # OS
 .DS_Store
