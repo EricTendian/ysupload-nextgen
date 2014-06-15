@@ -1,61 +1,120 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| Confide Controller Template
-|--------------------------------------------------------------------------
-|
-| This is the default Confide controller template for controlling user
-| authentication. Feel free to change to your needs.
-|
-*/
 
-class UserController extends BaseController {
+use YSUpload\Models\User;
+
+class UserController extends BaseController
+{
+    /**
+     * User Model
+     * @var User
+     */
+    protected $user;
 
     /**
-     * Displays the form for account creation
-     *
+     * Inject the models.
+     * @param User $user
      */
-    public function create()
+    public function __construct(User $user)
     {
-        return View::make(Config::get('confide::signup_form'));
+        parent::__construct();
+        $this->user = $user;
     }
 
     /**
-     * Stores new account
+     * Users settings page
+     *
+     * @return View
+     */
+    public function index()
+    {
+
+        list($user,$redirect) = $this->user->checkAuthAndRedirect('user');
+        if ($redirect) {return $redirect;}
+
+        // Show the page
+        return View::make('user/index', compact('user'));
+    }
+
+    /**
+     * Update a user
      *
      */
-    public function store()
+    public function update($user)
     {
-        $user = new User;
-
-        $user->username = Input::get( 'username' );
-        $user->email = Input::get( 'email' );
-        $user->password = Input::get( 'password' );
-
-        // The password confirmation will be removed from model
-        // before saving. This field will be used in Ardent's
-        // auto validation.
-        $user->password_confirmation = Input::get( 'password_confirmation' );
-
-        // Save if valid. Password field will be hashed before save
-        $user->save();
-
-        if ( $user->id )
-        {
-                        $notice = Lang::get('confide::confide.alerts.account_created') . ' ' . Lang::get('confide::confide.alerts.instructions_sent'); 
-                    
-            // Redirect with success message, You may replace "Lang::get(..." for your custom message.
-                        return Redirect::action('UserController@login')
-                            ->with( 'notice', $notice );
+        if ($user->id != Auth::user()->id) {
+            return Redirect::to('/')
+                ->with( 'error', 'access forbidden' );
         }
-        else
-        {
-            // Get validation errors (see Ardent package)
-            $error = $user->errors()->all(':message');
 
-                        return Redirect::action('UserController@create')
-                            ->withInput(Input::except('password'))
-                ->with( 'error', $error );
+        // If the 'admin' user is updating their own settings, the username will have been
+        // disabled in the form, and so won't be present in the form POST values.
+        // We'll change the rules here accordingly. The admin user cannot be renamed
+        // or deleted.
+
+        if ($user->username == 'admin') {
+
+          // Validate the inputs
+          $rules = array(
+              'fullname'=> 'required',
+              'email' => 'required|email|unique:users,email,'. $user->id,
+              'password' => 'between:4,11|confirmed',
+              'password_confirmation' => 'between:4,11',
+              );
+        } else {
+           // Validate the inputs
+          $rules = array(
+              'username'=> 'required|alpha_dash|unique:users,username,'. $user->id,
+              'fullname'=> 'required',
+              'email' => 'required|email|unique:users,email,'. $user->id,
+              'password' => 'between:4,11|confirmed',
+              'password_confirmation' => 'between:4,11',
+              );
+        }
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        if ($validator->passes()) {
+            $oldUser = clone $user;
+            if ($user->username != 'admin') {
+              $user->username = Input::get( 'username' );
+            }
+            $user->fullname = Input::get( 'fullname' );
+            $user->email = Input::get( 'email' );
+            $password = Input::get( 'password' );
+            $passwordConfirmation = Input::get( 'password_confirmation' );
+
+            if (!empty($password)) {
+                if ($password === $passwordConfirmation) {
+                    $user->password = $password;
+                    // The password confirmation will be removed from model
+                    // before saving. This field will be used in Ardent's
+                    // auto validation.
+                    $user->password_confirmation = $passwordConfirmation;
+                } else {
+                    // Redirect to the new user page
+                    return Redirect::to('user')->with('error', Lang::get('admin/users/messages.password_does_not_match'));
+                }
+            } else {
+                unset($user->password);
+                unset($user->password_confirmation);
+            }
+
+            // Save if valid. Password field will be hashed before save
+            $user->amend($rules);
+            $error = $user->errors()->all();
+
+            if (empty($error)) {
+                // Redirect to the new user page
+                return Redirect::to('user')->with('success', Lang::get('admin/users/messages.edit.success'));
+            } else {
+                //return Redirect::to('admin/users/' . $user->id . '/edit')->with('error', Lang::get('admin/users/messages.edit.failure'));
+                return Redirect::to('user')
+                    ->withInput(Input::except('password','password_confirmation'))
+                    ->with( 'error', $error );
+            }
+        } else {
+            // Form validation failed
+            return Redirect::to('user')->withInput()->withErrors($validator);
         }
     }
 
@@ -65,15 +124,12 @@ class UserController extends BaseController {
      */
     public function login()
     {
-        if( Confide::user() )
-        {
-            // If user is logged, redirect to internal 
+        if ( Confide::user() ) {
+            // If user is logged, redirect to internal
             // page, change it to '/admin', '/dashboard' or something
             return Redirect::to('/');
-        }
-        else
-        {
-            return View::make(Config::get('confide::login_form'));
+        } else {
+            return View::make('user/login');
         }
     }
 
@@ -93,30 +149,26 @@ class UserController extends BaseController {
         // If you wish to only allow login from confirmed users, call logAttempt
         // with the second parameter as true.
         // logAttempt will check if the 'email' perhaps is the username.
-        // Get the value from the config file instead of changing the controller
-        if ( Confide::logAttempt( $input, Config::get('confide::signup_confirm') ) ) 
-        {
-            // Redirect the user to the URL they were trying to access before
-            // caught by the authentication filter IE Redirect::guest('user/login').
-            // Otherwise fallback to '/'
-            // Fix pull #145
-            return Redirect::intended('/'); // change it to '/admin', '/dashboard' or something
-        }
-        else
-        {
+        if ( Confide::logAttempt( $input ) ) {
+            // If the session 'loginRedirect' is set, then redirect
+            // to that route. Otherwise redirect to '/'
+            $r = Session::get('loginRedirect');
+            if (!empty($r)) {
+                Session::forget('loginRedirect');
+
+                return Redirect::to($r);
+            }
+
+            return Redirect::to('/'); // change it to '/admin', '/dashboard' or something
+        } else {
             $user = new User;
 
             // Check if there was too many login attempts
-            if( Confide::isThrottled( $input ) )
-            {
+            if ( Confide::isThrottled( $input ) ) {
                 $err_msg = Lang::get('confide::confide.alerts.too_many_attempts');
-            }
-            elseif( $user->checkUserExists( $input ) and ! $user->isConfirmed( $input ) )
-            {
+            } elseif ( $user->checkUserExists( $input ) and ! $user->isConfirmed( $input ) ) {
                 $err_msg = Lang::get('confide::confide.alerts.not_confirmed');
-            }
-            else
-            {
+            } else {
                 $err_msg = Lang::get('confide::confide.alerts.wrong_credentials');
             }
 
@@ -129,19 +181,18 @@ class UserController extends BaseController {
     /**
      * Attempt to confirm account with code
      *
-     * @param  string  $code
+     * @param string $code
      */
     public function confirm( $code )
     {
-        if ( Confide::confirm( $code ) )
-        {
+        if ( Confide::confirm( $code ) ) {
             $notice_msg = Lang::get('confide::confide.alerts.confirmation');
+
                         return Redirect::action('UserController@login')
                             ->with( 'notice', $notice_msg );
-        }
-        else
-        {
+        } else {
             $error_msg = Lang::get('confide::confide.alerts.wrong_confirmation');
+
                         return Redirect::action('UserController@login')
                             ->with( 'error', $error_msg );
         }
@@ -162,15 +213,14 @@ class UserController extends BaseController {
      */
     public function do_forgot_password()
     {
-        if( Confide::forgotPassword( Input::get( 'email' ) ) )
-        {
+        if ( Confide::forgotPassword( Input::get( 'email' ) ) ) {
             $notice_msg = Lang::get('confide::confide.alerts.password_forgot');
+
                         return Redirect::action('UserController@login')
                             ->with( 'notice', $notice_msg );
-        }
-        else
-        {
+        } else {
             $error_msg = Lang::get('confide::confide.alerts.wrong_password_forgot');
+
                         return Redirect::action('UserController@forgot_password')
                             ->withInput()
                 ->with( 'error', $error_msg );
@@ -200,15 +250,14 @@ class UserController extends BaseController {
         );
 
         // By passing an array with the token, password and confirmation
-        if( Confide::resetPassword( $input ) )
-        {
+        if ( Confide::resetPassword( $input ) ) {
             $notice_msg = Lang::get('confide::confide.alerts.password_reset');
+
                         return Redirect::action('UserController@login')
                             ->with( 'notice', $notice_msg );
-        }
-        else
-        {
+        } else {
             $error_msg = Lang::get('confide::confide.alerts.wrong_password_reset');
+
                         return Redirect::action('UserController@reset_password', array('token'=>$input['token']))
                             ->withInput()
                 ->with( 'error', $error_msg );
@@ -222,7 +271,7 @@ class UserController extends BaseController {
     public function logout()
     {
         Confide::logout();
-        
+
         return Redirect::to('/');
     }
 

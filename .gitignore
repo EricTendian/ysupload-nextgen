@@ -1,8 +1,20 @@
-/bootstrap/compiled.php
+# Laravel
 /vendor
 composer.phar
 composer.lock
 .env.*.php
 .env.php
+/bootstrap/compiled.php
+
+# ide / editor
+.sublime-*
+
+# Packages
+/node_modules
+/bower_components
+
+# OS
 .DS_Store
 Thumbs.db
+Icon?
+.cache

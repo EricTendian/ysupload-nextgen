@@ -24,11 +24,11 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
-$env = $app->detectEnvironment(array(
+$env = $app->detectEnvironment(function () {
 
-	'local-eric' => array('axiom-dev'),
+	return getenv('APP_ENV');
 
-));
+});
 
 /*
 |--------------------------------------------------------------------------
