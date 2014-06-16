@@ -10,9 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <title>
-        @section('title')
-            Administration
-        @show
+        @section('title') {{ Config::get('setting.site.name') }} @show
     </title>
 
     <!--  Mobile Viewport Fix -->
@@ -25,16 +23,7 @@
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
 
     <!-- CSS -->
-    {{ HTML::style('assets/css/vendor.min.css') }}
-    {{ HTML::style('assets/css/app.min.css') }}
-
-    <style>
-    body {
-        padding: 60px 0;
-    }
-    </style>
-
-    @yield('styles')
+    {{ HTML::style('assets/css/vendor.min.css') }} {{ HTML::style('assets/css/app.min.css') }} @yield('styles')
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -44,67 +33,57 @@
 </head>
 
 <body>
+
+    <!-- Navbar -->
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">{{ Config::get('setting.site.name') }}</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <!--<li class="{{ (Request::is('/') ? ' active' : '') }}"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>-->
+                    <li><a href="{{ URL::to('random') }}" title="Random"><i class="fa fa-random"></i></a></li>
+                    <li><a href="{{ URL::to('upload') }}" title="Upload"><i class="fa fa-upload"></i></a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Auth::check()) @if (Auth::user()->hasRole('admin'))
+                    <li class="dropdown {{ (Request::is('admin/user*|admin/role*') ? ' active' : '') }}">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="{{{ URL::to('admin/user') }}}">
+                Admin Tasks <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li {{ (Request::is( 'admin/user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}">Users</a></li>
+                            <li {{ (Request::is( 'role*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/roles') }}}">Roles</a></li>
+                        </ul>
+                    </li>
+                    @endif
+                    <li class="dropdown {{ (Request::is('user*') ? ' active' : '') }}">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}} <span class="caret"></span>
+              </a>
+                        <ul class="dropdown-menu">
+                            <li {{ (Request::is( 'user*') ? ' class="active"' : '') }}>
+                                <a href="{{{ URL::to('user') }}}">Settings</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="{{{ URL::to('user/logout') }}}">Logout</a></li>
+                    @else
+                    <li {{ (Request::is( 'user/login') ? ' class="active"' : '') }}><a href="{{{ URL::to('user/login') }}}">Login</a></li>
+                    @endif
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+
     <!-- Container -->
     <div class="container">
-        <!-- Navbar -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Laravel 4 Starter</a>
-          </div>
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-              <li class="{{ (Request::is('/') ? ' active' : '') }}"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-              <li><a href="{{{ URL::to('widgets') }}}">Widgets</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              @if (Auth::check())
-                @if (Auth::user()->hasRole('admin'))
-                  <li class="dropdown {{ (Request::is('admin/user*|admin/role*') ? ' active' : '') }}">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="{{{ URL::to('admin/user') }}}">
-                    Admin Tasks <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li {{ (Request::is('admin/user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}">Users</a></li>
-                    <li {{ (Request::is('role*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/roles') }}}">Roles</a></li>
-                  </ul>
-                 </li>
-                @endif
-                <li class="dropdown {{ (Request::is('user*') ? ' active' : '') }}">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}} <span class="caret"></span>
-                </a>
-                    <ul class="dropdown-menu">
-                      <li {{ (Request::is('user*') ? ' class="active"' : '') }}>
-                        <a href="{{{ URL::to('user') }}}">Settings</a>
-                      </li>
-                  </ul>
-                </li>
-                <li><a href="{{{ URL::to('user/logout') }}}">Logout</a></li>
-              @else
-                <li {{ (Request::is('user/login') ? ' class="active"' : '') }}><a href="{{{ URL::to('user/login') }}}">Login</a></li>
-              @endif
-            </ul>
-          </div><!-- /.navbar-collapse -->
-        </nav>
-        <!-- ./ navbar -->
 
         <!-- Content -->
         @yield('content')
@@ -120,11 +99,7 @@
     <!-- ./ container -->
 
     <!-- Javascripts -->
-    {{ HTML::script('assets/js/jquery.min.js') }}
-    {{ HTML::script('assets/js/vendor.min.js') }}
-    {{ HTML::script('assets/js/app.min.js') }}
-
-    @yield('scripts')
+    {{ HTML::script('assets/js/jquery.min.js') }} {{ HTML::script('assets/js/vendor.min.js') }} {{ HTML::script('assets/js/app.min.js') }} @yield('scripts')
 
 </body>
 

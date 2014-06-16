@@ -17,10 +17,9 @@ return [
   |
   */
 
-  'company' => [
-    'name' => 'Company Name',
-    'description' => 'Company Description',
-    'phone' => '+1 800-123-4567'
+  'site' => [
+    'name' => 'YSUpload',
+    'description' => 'Free hosting for YSFlight addons'
   ],
 
   'session' => [
