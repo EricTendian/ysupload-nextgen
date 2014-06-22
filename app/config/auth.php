@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'model' => 'Acme\User\User',
+	'model' => 'YSUpload\Models\User',
 
 	/*
 	|--------------------------------------------------------------------------

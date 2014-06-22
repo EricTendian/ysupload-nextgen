@@ -1,12 +1,9 @@
 <?php namespace YSUpload\Models;
 
 use \Zizaco\Confide\ConfideUser;
-use \Zizaco\Entrust\HasRole;
 use \Carbon\Carbon;
 
 class User extends ConfideUser {
-
-	use HasRole; // Add this trait to your user model
 
 	/**
 	 * The database table used by the model.
@@ -70,37 +67,6 @@ class User extends ConfideUser {
     public function joined()
     {
         return String::date(Carbon::createFromFormat('Y-n-j G:i:s', $this->created_at));
-    }
-
-    /**
-     * Save roles inputted from multiselect
-     * @param $inputRoles
-     */
-    public function saveRoles($inputRoles)
-    {
-        if(! empty($inputRoles)) {
-            $this->roles()->sync($inputRoles);
-        } else {
-            $this->roles()->detach();
-        }
-    }
-
-    /**
-     * Returns user's current role ids only.
-     * @return array|bool
-     */
-    public function currentRoleIds()
-    {
-        $roles = $this->roles;
-        $roleIds = false;
-        if( !empty( $roles ) ) {
-            $roleIds = array();
-            foreach( $roles as &$role )
-            {
-                $roleIds[] = $role->id;
-            }
-        }
-        return $roleIds;
     }
 
     /**

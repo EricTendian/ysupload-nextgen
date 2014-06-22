@@ -124,7 +124,7 @@ return array(
 
         'Frozennode\Administrator\AdministratorServiceProvider',
         'Zizaco\Confide\ConfideServiceProvider',
-        'Zizaco\Entrust\EntrustServiceProvider',
+        'Way\Generators\GeneratorsServiceProvider',
     ),
 
     /*
