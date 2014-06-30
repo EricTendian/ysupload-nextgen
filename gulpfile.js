@@ -135,8 +135,13 @@ gulp.task('css:pub', ['less:build'], function() {
 });
 
 gulp.task('fonts:pub', function () {
-  return gulp.src([paths.bower.bootstrap + '/fonts/glyphicons-*', paths.bower.fontAwesome + '/fonts/*-webfont.*'])
+  return gulp.src([paths.bower.bootstrap + '/fonts/glyphicons-*', paths.bower.fontAwesome + '/fonts/*-webfont.*', paths.app.assets + '/fonts/*'])
     .pipe(gulp.dest(paths.public.assets + '/fonts'));
+});
+
+gulp.task('img:pub', function () {
+  return gulp.src([paths.app.assets + '/img/*'])
+    .pipe(gulp.dest(paths.public.assets + '/img'));
 });
 
 //////////////////////////////////////////////////
@@ -179,4 +184,4 @@ gulp.task('build:dev', []);
 gulp.task('build:prod', []);
 
 // gulp clean:pre && gulp TASK && gulp clean:post
-gulp.task('default', ['js:pub', 'js:lib', 'css:pub', 'fonts:pub', 'js:watch', 'less:watch']);
+gulp.task('default', ['js:pub', 'js:lib', 'css:pub', 'fonts:pub', 'img:pub', 'js:watch', 'less:watch']);

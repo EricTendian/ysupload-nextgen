@@ -35,7 +35,7 @@
 <body>
 
     <!-- Navbar -->
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -49,8 +49,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <!--<li class="{{ (Request::is('/') ? ' active' : '') }}"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>-->
-                    <li><a href="{{ URL::to('random') }}" title="Random"><i class="fa fa-random"></i></a></li>
-                    <li><a href="{{ URL::to('upload') }}" title="Upload"><i class="fa fa-upload"></i></a></li>
+                    <!--<li><a href="{{ URL::to('random') }}" title="Random"><i class="fa fa-random"></i></a></li>
+                    <li><a href="{{ URL::to('upload') }}" title="Upload"><i class="fa fa-upload"></i></a></li>-->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (Auth::check()) @if (Auth::user()->hasRole('admin'))
@@ -76,6 +76,20 @@
                     @else
                     <li {{ (Request::is( 'user/login') ? ' class="active"' : '') }}><a href="{{{ URL::to('user/login') }}}">Login</a></li>
                     @endif
+                    <li class="dropdown">
+                        <a id="menu-button" class="navbar-toggle" data-toggle="dropdown" href="#">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a id="menu-text" class="dropdown-toggle" data-toggle="dropdown" href="#">Menu</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">Blah</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
@@ -89,14 +103,14 @@
         @yield('content')
         <!-- ./ content -->
 
-        <!-- Footer -->
-        <footer class="clearfix">
-            @yield('footer')
-        </footer>
-        <!-- ./ Footer -->
-
     </div>
     <!-- ./ container -->
+
+    <!-- Footer -->
+    <footer class="clearfix">
+        @yield('footer')
+    </footer>
+    <!-- ./ Footer -->
 
     <!-- Javascripts -->
     {{ HTML::script('assets/js/jquery.min.js') }} {{ HTML::script('assets/js/vendor.min.js') }} {{ HTML::script('assets/js/app.min.js') }} @yield('scripts')
