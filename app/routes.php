@@ -23,6 +23,8 @@ Route::model('widgets', 'Widget');
 // Home route
 Route::get('/', 'HomeController@showWelcome');
 
+Route::get('upload', 'UploadController@index');
+
 // Confide routes - would prefer to create a session controller, and then a seperate
 // controller for user settings.
 Route::get( 'user',                        'UserController@index');
@@ -50,7 +52,7 @@ Route::group(array('before' => 'auth'), function()
 	// the default show resource route for /widgets/{widgets}
 	Route::get('widgets/data', 'WidgetController@data');
 
-	// Pre-baked resource controller actions for index, create, store, 
+	// Pre-baked resource controller actions for index, create, store,
 	// show, edit, update, destroy
 	Route::resource('widgets', 'WidgetController');
 

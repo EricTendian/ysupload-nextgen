@@ -44,11 +44,17 @@ var paths = {
 
   bower: {
     jquery: 'bower_components/jquery',
+    angular: 'bower_components/angular',
     respond: 'bower_components/respond',
     html5shiv: 'bower_components/html5shiv',
     bootstrap: 'bower_components/bootstrap',
     fontAwesome: 'bower_components/font-awesome',
-    jqueryCookie: 'bower_components/jquery-cookie'
+    jqueryCookie: 'bower_components/jquery-cookie',
+    blueimpCanvasToBlob: 'bower_components/blueimp-canvas-to-blob',
+    blueimpFileUpload: 'bower_components/blueimp-file-upload',
+    blueimpLoadImage: 'bower_components/blueimp-load-image',
+    blueimpTmpl: 'bower_components/blueimp-tmpl',
+    blueimpGallery: 'bower_components/blueimp-gallery'
   }
 };
 
@@ -72,6 +78,18 @@ gulp.task('js:vendor', function() {
     paths.bower.bootstrap + '/js/tab.js',
     paths.bower.bootstrap + '/js/affix.js',
     paths.bower.jqueryCookie + '/jquery.cookie.js',
+    paths.bower.blueimpFileUpload + '/js/vendor/jquery.ui.widget.js',
+    paths.bower.blueimpLoadImage + '/js/load-image.min.js',
+    paths.bower.blueimpCanvasToBlob + '/js/canvas-to-blob.js',
+    paths.bower.blueimpGallery + '/js/jquery.blueimp-gallery.min.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.iframe-transport.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-process.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-image.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-audio.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-video.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-validate.js',
+    paths.bower.blueimpFileUpload + '/js/jquery.fileupload-angular.js',
     paths.app.assets + '/js/vendor.js'
   ])
     .pipe(concat('vendor.js'))
@@ -96,13 +114,14 @@ gulp.task('js:lib', function () {
     paths.bower.jquery + '/dist/*.min.*',
     paths.bower.html5shiv + '/dist/html5shiv.min.js',
     paths.bower.respond + '/dest/respond.min.js',
+    paths.bower.angular + '/angular.min.js'
   ])
     .pipe(gulp.dest(paths.public.assets + '/js'));
 });
 
 gulp.task('js:pub', ['js:vendor', 'js:app'], function() {
   return gulp.src(paths.app.build + '/js/**/*.js')
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(rename(function (path) {
       path.basename += ".min";
     }))
@@ -119,6 +138,8 @@ gulp.task('less:build', function () {
       paths: [
         paths.bower.bootstrap + '/less',
         paths.bower.fontAwesome + '/less',
+        paths.bower.blueimpFileUpload + '/css',
+        paths.bower.blueimpGallery + '/css',
         paths.app.assets + '/less'
       ]}))
     .pipe(gulp.dest(paths.app.build + '/css'));
@@ -140,7 +161,11 @@ gulp.task('fonts:pub', function () {
 });
 
 gulp.task('img:pub', function () {
-  return gulp.src([paths.app.assets + '/img/*'])
+  return gulp.src([
+    paths.bower.blueimpFileUpload + '/img/*',
+    paths.bower.blueimpGallery + '/img/*',
+    paths.app.assets + '/img/*'
+  ])
     .pipe(gulp.dest(paths.public.assets + '/img'));
 });
 

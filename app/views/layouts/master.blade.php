@@ -113,7 +113,7 @@
     <!-- ./ Footer -->
 
     <!-- Javascripts -->
-    {{ HTML::script('assets/js/jquery.min.js') }} {{ HTML::script('assets/js/vendor.min.js') }} {{ HTML::script('assets/js/app.min.js') }} @yield('scripts')
+    {{ HTML::script('assets/js/jquery.min.js') }} {{ HTML::script('assets/js/angular.min.js') }} {{ HTML::script('assets/js/vendor.min.js') }} {{ HTML::script('assets/js/app.min.js') }} @yield('scripts')
 
 </body>
 

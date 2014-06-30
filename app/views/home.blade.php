@@ -5,9 +5,21 @@
 - {{ Config::get('setting.site.description') }}
 @stop
 
+@section('styles')
+<!-- blueimp Gallery styles -->
+{{ HTML::style('http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css') }}
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<style>
+/* Hide Angular JS elements before initializing */
+.ng-cloak {
+    display: none;
+}
+</style>
+@stop
+
 @section('content')
-<div class="row">
-    <div class="col-md-12 absolute-center" id="uploadbox">
+<!--<div class="row">
+    <div class="col-md-12" id="uploadbox">
         <div class="row">
             <div class="col-sm-2 col-sm-offset-3">
                 <h4>Upload files</h4>
@@ -42,7 +54,10 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
+
+@include('uploadform')
+
 @stop
 
 @section('footer')
@@ -56,4 +71,9 @@
         <a href="http://www.ysupload.com/ysuModPerms.php">YSU-ARM License Information</a>
     </div>
 </div>
+@stop
+
+@section('scripts')
+<!-- blueimp Gallery script -->
+<script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
 @stop
