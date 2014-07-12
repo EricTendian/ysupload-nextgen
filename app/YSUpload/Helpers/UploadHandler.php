@@ -1,5 +1,9 @@
 <?php namespace YSUpload\Helpers;
 
+use \Imagick,
+    \ImagickPixel,
+    \stdClass;
+
 /*
  * jQuery File Upload Plugin PHP Class 7.1.4
  * https://github.com/blueimp/jQuery-File-Upload
@@ -43,9 +47,9 @@ class UploadHandler
 
     function __construct($options = null, $initialize = true, $error_messages = null) {
         $this->options = array(
-            'script_url' => $this->get_full_url().'/',
+            'script_url' => 'upload',
             'upload_dir' => storage_path().'/files/',
-            'upload_url' => $this->get_full_url().'/files/',
+            'upload_url' => '/files/',
             'user_dirs' => false,
             'mkdir_mode' => 0755,
             'param_name' => 'files',

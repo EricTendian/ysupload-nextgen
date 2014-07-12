@@ -23,7 +23,7 @@ Route::model('widgets', 'Widget');
 // Home route
 Route::get('/', 'HomeController@showWelcome');
 
-Route::get('upload', 'UploadController@index');
+Route::any('upload', 'UploadController@index');
 
 // Confide routes - would prefer to create a session controller, and then a seperate
 // controller for user settings.

@@ -4,7 +4,7 @@
 (function () {
     'use strict';
 
-    var url = 'upload/';
+    var url = 'upload';
     var isOnGitHub = false;
 
     angular.module('demo', [
