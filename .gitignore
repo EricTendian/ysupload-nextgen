@@ -6,6 +6,8 @@ composer.lock
 !.env.testing.php
 .env.php
 /bootstrap/compiled.php
+/app/storage/files/
+/public/assets/
 
 # ide / editor
 .sublime-*
